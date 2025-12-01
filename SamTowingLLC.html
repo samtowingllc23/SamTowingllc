@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sam Towing LLC - 24/7 Roadside Assistance South Florida</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .8; }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(234, 179, 8, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(234, 179, 8, 0.8); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        .animate-fadeInUp {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        .animate-slideIn {
+            animation: slideIn 0.8s ease-out forwards;
+        }
+        
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .animate-glow {
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            background-size: 1000px 100%;
+            animation: shimmer 3s infinite;
+        }
+        
+        * {
+            scroll-behavior: smooth;
+        }
+        
+        .hero-bg {
+            background-image: url(AAAImages/sam.jpg);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .service-card {
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        .parallax {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .image-hover {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-hover img {
+            transition: transform 0.5s ease;
+        }
+
+        .image-hover:hover img {
+            transform: scale(1.1);
+        }
+
+        .counter {
+            transition: all 0.3s ease;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        .typing-effect {
+            overflow: hidden;
+            white-space: nowrap;
+            animation: typing 3s steps(40, end);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen">
+
+    <!-- AI-Powered Chat System -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <!-- Chat Button (Floating Action Button) -->
+        <button id="open-chat"
+                class="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-6 py-4 rounded-full shadow-2xl flex items-center gap-2 font-bold transition transform hover:scale-110 animate-glow focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50">
+            <span class="text-2xl">💬</span>
+            <span class="hidden sm:inline">Chat with Sam!</span>
+        </button>
+
+        <!-- Chat Window -->
+        <div id="chat-window" class="hidden absolute bottom-20 right-0 w-96 h-[32rem] bg-white rounded-2xl shadow-2xl flex-col border-2 border-gray-200">
+            <!-- Chat Header -->
+            <div class="p-4 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-t-2xl flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                        <span class="text-2xl">🤖</span>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg">Sam's AI Assistant</h3>
+                        <p class="text-xs text-red-100">● Online - Instant replies</p>
+                    </div>
+                </div>
+                <button id="close-chat" class="text-white hover:text-gray-200 focus:outline-none text-3xl leading-none">
+                    ×
+                </button>
+            </div>
+
+            <!-- Chat Body -->
+            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto bg-gray-50 space-y-3">
+                <!-- Welcome Message (This will be dynamically inserted by JS) -->
+            </div>
+
+            <!-- Typing Indicator (Hidden by default) -->
+            <div id="typing-indicator" class="hidden px-4 py-2">
+                <div class="flex gap-2 items-start">
+                    <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="text-white text-sm">🤖</span>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200">
+                        <div class="flex gap-1">
+                            <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                            <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                            <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="p-4 border-t-2 border-gray-200 bg-white rounded-b-2xl">
+                <div class="flex gap-2">
+                    <input type="text" 
+                           id="chat-input" 
+                           placeholder="Ask me anything..." 
+                           class="flex-1 p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-sm">
+                    <button id="send-button"
+                            class="bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-lg font-bold transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-600">
+                        <span class="text-xl">➤</span>
+                    </button>
+                </div>
+                <p class="text-xs text-gray-500 mt-2 text-center">Powered by AI • Instant responses 24/7</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript for Chat Functionality -->
+    <script>
+        const openChatBtn = document.getElementById('open-chat');
+        const closeChatBtn = document.getElementById('close-chat');
+        const chatWindow = document.getElementById('chat-window');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+        const typingIndicator = document.getElementById('typing-indicator');
+
+        // Toggle chat window visibility
+        openChatBtn.addEventListener('click', () => {
+            chatWindow.classList.remove('hidden');
+            chatWindow.classList.add('flex');
+            openChatBtn.classList.add('hidden');
+            scrollToBottom();
+            chatInput.focus();
+        });
+
+        closeChatBtn.addEventListener('click', () => {
+            chatWindow.classList.add('hidden');
+            chatWindow.classList.remove('flex');
+            openChatBtn.classList.remove('hidden');
+        });
+
+        // Handle sending messages (onclick removed from HTML, handled here)
+        sendButton.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            const messageText = chatInput.value.trim();
+            if (messageText === '') return;
+
+            addMessage(messageText, 'user');
+            chatInput.value = '';
+            showTypingIndicator();
+            scrollToBottom();
+
+            // Simulate an AI response after a short delay
+            setTimeout(() => {
+                const aiResponse = generateAiResponse(messageText);
+                addMessage(aiResponse, 'ai');
+                hideTypingIndicator();
+                scrollToBottom();
+            }, 1000 + Math.random() * 1000); // Random delay 1s to 2s
+        }
+
+        function addMessage(text, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('flex', 'gap-2', 'items-start', 'animate-fadeInUp');
+
+            if (type === 'user') {
+                messageDiv.classList.add('justify-end');
+                messageDiv.innerHTML = `
+                    <div class="bg-red-600 text-white p-3 rounded-lg shadow-md max-w-[80%]">
+                        <p class="text-sm">${text}</p>
+                    </div>
+                `;
+            } else {
+                // AI message structure
+                messageDiv.innerHTML = `
+                    <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="text-white text-sm">🤖</span>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg shadow-sm max-w-[80%] border border-gray-200">
+                        <p class="text-gray-800 text-sm">${text}</p>
+                    </div>
+                `;
+            }
+            chatMessages.appendChild(messageDiv);
+        }
+
+        function showTypingIndicator() {
+            typingIndicator.classList.remove('hidden');
+        }
+
+        function hideTypingIndicator() {
+            typingIndicator.classList.add('hidden');
+        }
+
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function generateAiResponse(userMessage) {
+            const lowerCaseMsg = userMessage.toLowerCase();
+            if (lowerCaseMsg.includes('how much') || lowerCaseMsg.includes('what is the cost')) {
+                return "Our standard service starts at $50. For a custom quote, please visit our [service page].";
+            } else if (lowerCaseMsg.includes('i need ') || lowerCaseMsg.includes('help')) {
+                return "You can book an appointment directly through our [instant booking].";
+            } else if (lowerCaseMsg.includes('what service') || lowerCaseMsg.includes('do you')) {
+                return "Yes, we provide jump start, tire change, fuel delivery and lockout services.";
+            } else if (lowerCaseMsg.includes('emergency')) {
+                return "If this is an emergency, please us immediately at 305)744-1657.";
+            } else if (lowerCaseMsg.includes('hello') || lowerCaseMsg.includes('hi')) {
+                 return "Hello there! I'm Sam's assistant. How can I help you today?";
+            }
+            return "I'm sorry, I couldn't find information about that. Please ask about services, pricing, or booking!";
+        }
+
+        // Add the initial welcome message when the page loads
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const welcomeMsgHtml = `
+                👋 Hi! I'm Sam's AI assistant. I can help you with:
+                <ul class="text-gray-700 text-sm mt-2 space-y-1">
+                    <li>• Service pricing & info</li>
+                    <li>• Booking appointments</li>
+                    <li>• Emergency assistance</li>
+                    <li>• Service area questions</li>
+                </ul>
+                <p class="text-gray-800 text-sm mt-2 font-semibold">How can I help you today?</p>
+            `;
+            addMessage(welcomeMsgHtml, 'ai');
+        });
+
+</script>
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700 text-white sticky top-0 z-40 shadow-2xl">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-3 animate-slideIn">
+                    <svg class="w-10 h-10 animate-float" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold">SAM TOWING LLC</h1>
+                        <p class="text-xs md:text-sm text-yellow-300">🔧 Your Personal Roadside Hero</p>
+                    </div>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#home" class="hover:text-yellow-300 transition transform hover:scale-110">Home</a>
+                    <a href="#about" class="hover:text-yellow-300 transition transform hover:scale-110">About</a>
+                    <a href="#services" class="hover:text-yellow-300 transition transform hover:scale-110">Services</a>
+                    <a href="#booking" class="hover:text-yellow-300 transition transform hover:scale-110">Book Now</a>
+                    <a href="#contact" class="hover:text-yellow-300 transition transform hover:scale-110">Contact</a>
+                </nav>
+
+                <!-- Emergency Call Button -->
+                <a href="tel:+13057441657" class="hidden md:flex items-center space-x-2 bg-red-600 hover:bg-red-700 px-6 py-3 rounded-full font-bold transition transform hover:scale-105 animate-pulse">
+                    <span>📞</span>
+                    <span>(305) 744-1657</span>
+                </a>
+
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileMenu()" class="md:hidden text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <nav id="mobileMenu" class="hidden md:hidden pb-4 space-y-2">
+                <a href="#home" class="block px-4 py-2 hover:bg-blue-800 rounded transition">Home</a>
+                <a href="#about" class="block px-4 py-2 hover:bg-blue-800 rounded transition">About</a>
+                <a href="#services" class="block px-4 py-2 hover:bg-blue-800 rounded transition">Services</a>
+                <a href="#booking" class="block px-4 py-2 hover:bg-blue-800 rounded transition">Book Now</a>
+                <a href="#contact" class="block px-4 py-2 hover:bg-blue-800 rounded transition">Contact</a>
+                <a href="tel:+13057441657" class="flex items-center space-x-2 bg-red-600 px-4 py-2 rounded mt-2">
+                    <span>📞 Call Now: (305) 744-1657</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section with Real Image -->
+    <section id="home" class="relative hero-bg text-white py-32 md:py-40">
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-blue-600/80"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-4xl animate-fadeInUp">
+                <div class="inline-block bg-yellow-400 text-blue-900 px-6 py-3 rounded-full font-bold mb-6 animate-pulse text-sm md:text-base">
+                    🚨 Available 24/7 - Your Emergency Is My Priority!
+                </div>
+                <h2 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+                    Stranded in South Florida?<br/>
+                    <span class="text-yellow-400">I'm On My Way!</span>
+                </h2>
+                <p class="text-xl md:text-2xl mb-8 text-blue-100">
+                    One-man operation with 5+ years of experience. Fast, reliable, and personal service you can trust. Battery jumps, tire changes, fuel delivery, and lockouts - I do it all!
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="#booking" class="bg-yellow-400 hover:bg-yellow-500 text-blue-900 px-8 py-5 rounded-lg font-bold text-lg transition transform hover:scale-110 shadow-2xl text-center animate-glow">
+                        🚀 Book Service Now
+                    </a>
+                    <a href="tel:+13057441657" class="bg-white hover:bg-gray-100 text-blue-900 px-8 py-5 rounded-lg font-bold text-lg transition transform hover:scale-110 shadow-2xl text-center">
+                        📞 Call Immediately
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Signals with Counters -->
+    <section class="bg-white py-12 shadow-2xl relative z-10">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="transform hover:scale-110 transition">
+                    <div class="text-5xl mb-3 animate-float">🕒</div>
+                    <p class="font-bold text-3xl md:text-4xl text-blue-900 counter" data-target="24">0</p>
+                    <p class="text-sm md:text-base text-gray-600 font-semibold">Hours / 7 Days</p>
+                </div>
+                <div class="transform hover:scale-110 transition">
+                    <div class="text-5xl mb-3 animate-float" style="animation-delay: 0.2s">⭐</div>
+                    <p class="font-bold text-3xl md:text-4xl text-blue-900 counter" data-target="5">0</p>
+                    <p class="text-sm md:text-base text-gray-600 font-semibold">Years Experience</p>
+                </div>
+                <div class="transform hover:scale-110 transition">
+                    <div class="text-5xl mb-3 animate-float" style="animation-delay: 0.4s">⚡</div>
+                    <p class="font-bold text-3xl md:text-4xl text-blue-900"><span class="counter" data-target="25">0</span> min</p>
+                    <p class="text-sm md:text-base text-gray-600 font-semibold">Avg Response Time</p>
+                </div>
+                <div class="transform hover:scale-110 transition">
+                    <div class="text-5xl mb-3 animate-float" style="animation-delay: 0.6s">💯</div>
+                    <p class="font-bold text-3xl md:text-4xl text-blue-900 counter" data-target="100">0</p>
+                    <p class="text-sm md:text-base text-gray-600 font-semibold">% Customer Satisfaction</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Me Section with Real Image -->
+    <section id="about" class="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-center text-blue-900 mb-6">My Story</h2>
+                <div class="w-24 h-1 bg-yellow-400 mx-auto mb-12"></div>
+                
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="image-hover rounded-2xl overflow-hidden shadow-2xl">
+                        <img src="AAAImages/sam6.jpg" 
+                             alt="Roadside Assistance Professional" 
+                             class="w-full h-full object-cover">
+                    </div>
+                    <div class="space-y-6">
+                        <div class="bg-white p-6 rounded-xl shadow-lg transform hover:scale-105 transition">
+                            <h3 class="text-2xl font-bold text-blue-900 mb-3">👋 Hi, I'm Sam!</h3>
+                            <p class="text-gray-700 text-lg">My journey into roadside assistance didn't start with a business plan; it started behind the wheel, working for a local tow truck company. I quickly fell in love with the job—not just the mechanics of the tow, but the human connection.
+There is a unique kind of good karma that comes from being the reliable face people see during a stressful roadside emergency. Helping folks get safely back on their journey always brought tremendous fulfillment to my life.
+That passion inspired me to start my own service, with the ultimate goal of owning my own tow truck. This business is built on that simple principle: providing reliable help when it's needed most and finding joy in the good it brings to others.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service Area with Image -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl md:text-5xl font-bold text-center text-blue-900 mb-4">I Serve All of South Florida</h2>
+            <p class="text-center text-gray-600 text-lg mb-12">Miami-Dade, Broward & Palm Beach Counties</p>
+            <div class="max-w-5xl mx-auto">
+                <div class="image-hover rounded-3xl overflow-hidden shadow-2xl">
+                    <img src="AAAImages/SoutheastFlorida566X827.jpg" 
+                         alt="South Florida Map" 
+                         class="w-full h-96 object-cover">
+                </div>
+                <div class="grid md:grid-cols-3 gap-6 mt-8">
+                    <div class="bg-blue-50 p-6 rounded-xl text-center transform hover:scale-105 transition">
+                        <div class="text-4xl mb-3">📍</div>
+                        <h3 class="font-bold text-xl text-blue-900 mb-2">Miami-Dade</h3>
+                        <p class="text-gray-600">Miami, Hialeah, Kendall, Homestead & all surrounding areas</p>
+                    </div>
+                    <div class="bg-blue-50 p-6 rounded-xl text-center transform hover:scale-105 transition">
+                        <div class="text-4xl mb-3">📍</div>
+                        <h3 class="font-bold text-xl text-blue-900 mb-2">Broward County</h3>
+                        <p class="text-gray-600">Fort Lauderdale, Hollywood, Pembroke Pines & more</p>
+                    </div>
+                    <div class="bg-blue-50 p-6 rounded-xl text-center transform hover:scale-105 transition">
+                        <div class="text-4xl mb-3">📍</div>
+                        <h3 class="font-bold text-xl text-blue-900 mb-2">Palm Beach</h3>
+                        <p class="text-gray-600">West Palm Beach, Boca Raton, Delray Beach & beyond</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Real Customer Reviews with Images -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl md:text-5xl font-bold text-center text-blue-900 mb-4">Real Stories from Real People</h2>
+            <p class="text-center text-gray-600 text-lg mb-12">See what my customers are saying!</p>
+            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <div class="bg-white p-8 rounded-2xl shadow-xl transform hover:scale-105 transition">
+                    <div class="flex items-center gap-4 mb-4">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" 
+                             alt="Customer" 
+                             class="w-16 h-16 rounded-full object-cover">
+                        <div>
+                            <p class="font-bold text-blue-900">Jennifer M.</p>
+                            <div class="text-yellow-400 text-xl">⭐⭐⭐⭐⭐</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 text-lg italic">"Sam saved my day! Dead battery on I-95 and he was there in 20 minutes. Super professional and friendly. Highly recommend!"</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-xl transform hover:scale-105 transition">
+                    <div class="flex items-center gap-4 mb-4">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" 
+                             alt="Customer" 
+                             class="w-16 h-16 rounded-full object-cover">
+                        <div>
+                            <p class="font-bold text-blue-900">Carlos R.</p>
+                            <div class="text-yellow-400 text-xl">⭐⭐⭐⭐⭐</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 text-lg italic">"Best roadside service in South Florida! Sam's prices are fair and he genuinely cares about helping people. Will definitely call again if needed."</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-xl transform hover:scale-105 transition">
+                    <div class="flex items-center gap-4 mb-4">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80" 
+                             alt="Customer" 
+                             class="w-16 h-16 rounded-full object-cover">
+                        <div>
+                            <p class="font-bold text-blue-900">Amanda K.</p>
+                            <div class="text-yellow-400 text-xl">⭐⭐⭐⭐⭐</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 text-lg italic">"Locked my keys in the car at 2 AM. Sam answered right away and got me back in my car in 30 minutes. Lifesaver!"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4 max-w-4xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center text-blue-900 mb-12">Common Questions</h2>
+            <div class="space-y-4">
+                <div class="bg-gradient-to-r from-blue-50 to-white rounded-2xl overflow-hidden border-2 border-blue-100 shadow-lg transform hover:scale-102 transition">
+                    <button onclick="toggleFaq(0)" class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-blue-50 transition">
+                        <span class="font-bold text-blue-900 text-lg">How fast can you get to me?</span>
+                        <span class="text-blue-600 text-2xl">▼</span>
+                    </button>
+                    <div id="faq0" class="hidden px-8 py-6 bg-white border-t-2 border-blue-100">
+                        <p class="text-gray-700 text-lg">My average response time is 25-30 minutes. As a one-man operation, I'm always mobile and ready to help. In true emergencies, I prioritize getting to you as fast as safely possible!</p>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-blue-50 to-white rounded-2xl overflow-hidden border-2 border-blue-100 shadow-lg transform hover:scale-102 transition">
+                    <button onclick="toggleFaq(1)" class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-blue-50 transition">
+                        <span class="font-bold text-blue-900 text-lg">What areas do you cover?</span>
+                        <span class="text-blue-600 text-2xl">▼</span>
+                    </button>
+                    <div id="faq1" class="hidden px-8 py-6 bg-white border-t-2 border-blue-100">
+                        <p class="text-gray-700 text-lg">I serve all of Miami-Dade, Broward, and Palm Beach counties. Whether you're on a major highway or in a residential neighborhood, I'll get to you!</p>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-blue-50 to-white rounded-2xl overflow-hidden border-2 border-blue-100 shadow-lg transform hover:scale-102 transition">
+                    <button onclick="toggleFaq(2)" class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-blue-50 transition">
+                        <span class="font-bold text-blue-900 text-lg">Are you really available 24/7?</span>
+                        <span class="text-blue-600 text-2xl">▼</span>
+                    </button>
+                    <div id="faq2" class="hidden px-8 py-6 bg-white border-t-2 border-blue-100">
+                        <p class="text-gray-700 text-lg">Yes! I operate 24 hours a day, 7 days a week, including all holidays. Roadside emergencies don't wait for business hours, and neither do I!</p>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-blue-50 to-white rounded-2xl overflow-hidden border-2 border-blue-100 shadow-lg transform hover:scale-102 transition">
+                    <button onclick="toggleFaq(3)" class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-blue-50 transition">
+                        <span class="font-bold text-blue-900 text-lg">What forms of payment do you accept?</span>
+                        <span class="text-blue-600 text-2xl">▼</span>
+                    </button>
+                    <div id="faq3" class="hidden px-8 py-6 bg-white border-t-2 border-blue-100">
+                        <p class="text-gray-700 text-lg">I accept cash, all major credit cards (Visa, Mastercard, Amex, Discover), Venmo, Zelle, and Cash App. Whatever is most convenient for you!</p>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-blue-50 to-white rounded-2xl overflow-hidden border-2 border-blue-100 shadow-lg transform hover:scale-102 transition">
+                    <button onclick="toggleFaq(4)" class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-blue-50 transition">
+                        <span class="font-bold text-blue-900 text-lg">Do you work with insurance companies?</span>
+                        <span class="text-blue-600 text-2xl">▼</span>
+                    </button>
+                    <div id="faq4" class="hidden px-8 py-6 bg-white border-t-2 border-blue-100">
+                        <p class="text-gray-700 text-lg">Yes! I work with most major insurance companies. I can provide you with all the documentation you need for reimbursement.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section with Background -->
+    <section id="contact" class="py-32 bg-gradient-to-br from-blue-900 to-blue-700 text-white relative parallax" style="background-image: url(AAAImages/sam3.jpg);">
+        <div class="absolute inset-0 bg-blue-900/85"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-5xl md:text-6xl font-bold mb-6 animate-fadeInUp">Need Roadside Help?</h2>
+                <p class="text-2xl md:text-3xl text-yellow-300 mb-8 animate-fadeInUp">I'm Just One Call Away!</p>
+                <p class="text-xl text-blue-100 mb-12 max-w-2xl mx-auto">
+                    Don't stay stranded another minute. Whether it's a dead battery, flat tire, or you're locked out - I'm here to help 24/7!
+                </p>
+                
+                <div class="grid md:grid-cols-3 gap-8 mb-12">
+                    <div class="bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl border border-white/20">
+                        <div class="text-6xl mb-4">📞</div>
+                        <h3 class="font-bold text-2xl mb-3">Call or Text</h3>
+                        <a href="tel:+13057441657" class="text-yellow-400 text-2xl font-bold hover:underline block">
+                            (305) 744-1657
+                        </a>
+                    </div>
+
+                    <div class="bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl border border-white/20">
+                        <div class="text-6xl mb-4">📍</div>
+                        <h3 class="font-bold text-2xl mb-3">Service Area</h3>
+                        <p class="text-blue-100">Miami-Dade<br/>Broward<br/>Palm Beach</p>
+                    </div>
+
+                    <div class="bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl border border-white/20">
+                        <div class="text-6xl mb-4">⏰</div>
+                        <h3 class="font-bold text-2xl mb-3">Hours</h3>
+                        <p class="text-yellow-400 font-bold text-2xl">24/7/365</p>
+                    </div>
+                </div>
+
+                <a href="tel:+13057441657" class="inline-block bg-yellow-400 hover:bg-yellow-500 text-blue-900 px-16 py-6 rounded-full font-bold text-3xl transition transform hover:scale-110 shadow-2xl animate-glow">
+                    📞 CALL NOW: (305) 744-1657
+                </a>
+
+                <p class="mt-8 text-blue-200 text-lg">
+                    Professional roadside assistance • Fair pricing • 5+ years experience<br/>
+                    Your South Florida roadside hero since July 2023
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-12">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-6">
+                <h3 class="text-3xl font-bold text-white mb-2">SAM TOWING LLC</h3>
+                <p class="text-yellow-400">Your Trusted Roadside Partner Since 2023</p>
+            </div>
+            <p class="mb-4 text-lg">© 2024 Sam Towing LLC. All rights reserved.</p>
+            <p class="text-sm mb-6">Licensed & Insured | Serving South Florida with Pride</p>
+            <div class="flex justify-center gap-8 text-base">
+                <span>⭐ 5+ Years Experience</span>
+                <span>🚗 Fast Response</span>
+                <span>💯 100% Satisfaction</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // FAQ Toggle
+        function toggleFaq(index) {
+            const faq = document.getElementById('faq' + index);
+            faq.classList.toggle('hidden');
+        }
+
+        // Quote Generator
+        function generateQuote() {
+            const service = document.getElementById('serviceSelect').value;
+            const location = document.getElementById('locationInput').value;
+            const phone = document.getElementById('phoneInput').value;
+            
+            if (!service || !location || !phone) {
+                alert('Please fill in all fields to get your quote!');
+                return;
+            }
+
+            const prices = {
+                'jumpstart': '$50',
+                'tire': '$60',
+                'fuel': '$30',
+                'lockout': '$55'
+            };
+
+            document.getElementById('quotePrice').textContent = prices[service] || '$50';
+            document.getElementById('quoteResult').classList.remove('hidden');
+            
+            // Scroll to result
+            document.getElementById('quoteResult').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Counter Animation
+        function animateCounters() {
+            const counters = document.querySelectorAll('.counter');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+
+                const timer = setInterval(() => {
+                    current += step;
+                    if (current >= target) {
+                        counter.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.floor(current);
+                    }
+                }, 16);
+            });
+        }
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Initialize animations on page load
+        window.addEventListener('load', () => {
+            animateCounters();
+            
+            // Add fade-in animation to sections
+            document.querySelectorAll('section').forEach(section => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(20px)';
+                section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(section);
+            });
+        });
+
+        // Smooth scroll for all anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html><p class="-700 text-lg leading-relaxed">
+                                Since July 2023, I've been South Florida's most dedicated roadside assistance provider. As a one-man operation, I bring 5+ years of hands-on experience directly to you - no middlemen, no delays </p>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-xl shadow-lg transform hover:scale-105 transition">
+                            <h3 class="text-2xl font-bold text-blue-900 mb-3">🔧 What Makes Me Different?</h3>
+                            <ul class="space-y-3 text-gray-700 text-lg">
+                                <li class="flex items-start">
+                                    <span class="text-2xl mr-3">✓</span>
+                                    <span><strong>Personal service</strong> - You deal directly with me, not a call center</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-2xl mr-3">✓</span>
+                                    <span><strong>Fast response</strong> - I'm always ready, 24/7/365</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-2xl mr-3">✓</span>
+                                    <span><strong>Honest pricing</strong> - No hidden fees, ever</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-2xl mr-3">✓</span>
+                                    <span><strong>Expert service</strong> - 5+ years solving roadside problems</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-yellow-400 to-orange-400 p-6 rounded-xl shadow-lg text-white">
+                            <p class="text-xl font-bold">💪 When you call me, you're not just getting service - you're getting a roadside hero who genuinely cares about getting you back on the road safely!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section with Real Images -->
+    <section id="services" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl md:text-5xl font-bold text-center text-blue-900 mb-4">My Expert Services</h2>
+            <p class="text-center text-gray-600 text-lg mb-12 max-w-2xl mx-auto">
+                Specialized roadside assistance when you need it most. Transparent pricing, professional service, guaranteed satisfaction.
+            </p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+                <!-- Service 1 - Jump Start -->
+                <div class="service-card bg-gradient-to-br from-white to-blue-50 p-6 rounded-2xl shadow-xl hover:shadow-2xl border-2 border-blue-100">
+                    <div class="image-hover rounded-xl overflow-hidden mb-4">
+                        <img src="AAAImages/jumpstart.avif" 
+                             alt="Jump Start Service" 
+                             class="w-full h-48 object-cover">
+                    </div>
+                    <div class="text-5xl mb-4">🔋</div>
+                    <h3 class="text-xl font-bold text-blue-900 mb-2">Jump Start</h3>
+                    <p class="text-gray-600 mb-4">Dead battery? I'll get you running in minutes with professional equipment.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-3xl font-bold text-blue-600">$50</span>
+                        <a href="#booking" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition transform hover:scale-105">Book Now</a>
+                    </div>
+                </div>
+
+                <!-- Service 2 - Tire Change -->
+                <div class="service-card bg-gradient-to-br from-white to-blue-50 p-6 rounded-2xl shadow-xl hover:shadow-2xl border-2 border-blue-100">
+                    <div class="image-hover rounded-xl overflow-hidden mb-4">
+                        <img src="AAAImages/tirechange.webp" 
+                             alt="Tire Change Service" 
+                             class="w-full h-48 object-cover">
+                    </div>
+                    <div class="text-5xl mb-4">🔧</div>
+                    <h3 class="text-xl font-bold text-blue-900 mb-2">Tire Change</h3>
+                    <p class="text-gray-600 mb-4">Flat tire? I'll swap it with your spare quickly and safely.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-3xl font-bold text-blue-600">$60</span>
+                        <a href="#booking" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition transform hover:scale-105">Book Now</a>
+                    </div>
+                </div>
+
+                <!-- Service 3 - Fuel Delivery -->
+                <div class="service-card bg-gradient-to-br from-white to-blue-50 p-6 rounded-2xl shadow-xl hover:shadow-2xl border-2 border-blue-100">
+                    <div class="image-hover rounded-xl overflow-hidden mb-4">
+                        <img src="AAAImages/fuel-delivery.jpg" 
+                             alt="Fuel Delivery Service" 
+                             class="w-full h-48 object-cover">
+                    </div>
+                    <div class="text-5xl mb-4">⛽</div>
+                    <h3 class="text-xl font-bold text-blue-900 mb-2">Fuel Delivery</h3>
+                    <p class="text-gray-600 mb-4">Ran out of gas? I'll bring fuel directly to your location.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-3xl font-bold text-blue-600">$30</span>
+                        <a href="#booking" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition transform hover:scale-105">Book Now</a>
+                    </div>
+                </div>
+
+                <!-- Service 4 - Lockout Service -->
+                <div class="service-card bg-gradient-to-br from-white to-blue-50 p-6 rounded-2xl shadow-xl hover:shadow-2xl border-2 border-blue-100">
+                    <div class="image-hover rounded-xl overflow-hidden mb-4">
+                        <img src="AAAImages/Airbag-car-lockout-Geo-Tag.jpg" 
+                             alt="Lockout Service" 
+                             class="w-full h-48 object-cover">
+                    </div>
+                    <div class="text-5xl mb-4">🔑</div>
+                    <h3 class="text-xl font-bold text-blue-900 mb-2">Lockout Service</h3>
+                    <p class="text-gray-600 mb-4">Locked out of your car? I'll get you back in without damage.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-3xl font-bold text-blue-600">$55</span>
+                        <a href="#booking" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition transform hover:scale-105">Book Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Booking Section -->
+    <section id="booking" class="py-20 bg-gradient-to-br from-blue-900 to-blue-700 text-white parallax" style="background-image: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1600&q=80');">
+        <div class="absolute inset-0 bg-blue-900/90"></div>
+        <div class="container mx-auto px-4 max-w-4xl relative z-10">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-4">Get Help Now!</h2>
+            <p class="text-center text-blue-100 text-lg mb-12">Quick quote and instant booking - I'll be there in 25-30 minutes!</p>
+            
+            <div class="glass-effect p-8 md:p-12 rounded-3xl shadow-2xl">
+                <form id="quoteForm" class="space-y-6">
+                    <div>
+                        <label class="block text-lg font-semibold mb-3 text-white">What Do You Need?</label>
+                        <select id="serviceSelect" class="w-full px-6 py-4 text-lg border-2 border-blue-300 rounded-xl focus:border-yellow-400 focus:outline-none bg-white text-gray-800 transition">
+                            <option value="">Select a service...</option>
+                            <option value="jumpstart">🔋 Jump Start - $50</option>
+                            <option value="tire">🔧 Tire Change - $60</option>
+                            <option value="fuel">⛽ Fuel Delivery - $30</option>
+                            <option value="lockout">🔑 Lockout Service - $55</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-lg font-semibold mb-3 text-white">Where Are You?</label>
+                        <input type="text" 
+                               id="locationInput" 
+                               placeholder="Enter your location (address or nearest intersection)" 
+                               class="w-full px-6 py-4 text-lg border-2 border-blue-300 rounded-xl focus:border-yellow-400 focus:outline-none bg-white text-gray-800 transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-lg font-semibold mb-3 text-white">Your Phone Number</label>
+                        <input type="tel" 
+                               id="phoneInput" 
+                               placeholder="(305) 123-4567" 
+                               class="w-full px-6 py-4 text-lg border-2 border-blue-300 rounded-xl focus:border-yellow-400 focus:outline-none bg-white text-gray-800 transition">
+                    </div>
+
+                    <button type="button" 
+                            onclick="generateQuote()" 
+                            class="w-full bg-yellow-400 hover:bg-yellow-500 text-blue-900 py-5 rounded-xl font-bold text-xl transition transform hover:scale-105 shadow-2xl animate-glow">
+                        🚀 Get Instant Quote & Book Now!
+                    </button>
+                </form>
+
+                <div id="quoteResult" class="hidden mt-8 p-8 bg-green-500 rounded-2xl shadow-2xl animate-fadeInUp">
+                    <p class="text-white font-bold text-2xl mb-3">✓ Quote Ready!</p>
+                    <p class="text-4xl font-bold text-white mb-6" id="quotePrice"></p>
+                    <p class="text-white text-lg mb-6">
+                        I'll be there in approximately <strong>25-30 minutes!</strong> 🚗💨
+                    </p>
+                    <a href="tel:+13057441657" class="block w-full bg-white hover:bg-gray-100 text-green-600 py-4 rounded-xl font-bold text-xl transition text-center shadow-xl">
+                        📞 Call (305) 744-1657 to Confirm
+                    </a>
+                </div>
+            </div>
+
+            <!-- Direct Call CTA -->
+            <div class="mt-12 text-center">
+                <p class="text-2xl text-white mb-4">Need help RIGHT NOW?</p>
+                <a href="tel:+13057441657" class="inline-block bg-red-600 hover:bg-red-700 text-white px-12 py-6 rounded-full font-bold text-2xl transition transform hover:scale-110 shadow-2xl animate-pulse">
+                    📞 CALL ME NOW: (305) 744-1657
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Me Section -->
+    <section class="py-20 bg-gradient-to-br from-yellow-50 to-orange-50">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center text-blue-900 mb-4">Why Choose Sam Towing?</h2>
+            <div class="w-24 h-1 bg-yellow-400 mx-auto mb-12"></div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-2xl shadow-xl transform hover:scale-105 transition">
+                    <div class="text-6xl mb-4 animate-float">💼</div>
+                    <h3 class="text-2xl font-bold text-blue-900 mb-3">One-Man Operation</h3>
+                    <p class="text-gray-700 text-lg">You get me directly - no call centers, no confusion. Personal, reliable service every single time.</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-xl transform hover:scale-105 transition">
+                    <div class="text-6xl mb-4 animate-float" style="animation-delay: 0.3s">⚡</div>
+                    <h3 class="text-2xl font-bold text-blue-900 mb-3">Lightning Fast</h3>
+                    <p class="text-gray-700 text-lg">25-minute average response time. When you're stranded, every minute counts - I get that!</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-xl transform hover:scale-105 transition">
+                    <div class="text-6xl mb-4 animate-float" style="animation-delay: 0.6s">💎</div>
+                    <h3 class="text-2xl font-bold text-blue-900 mb-3">5+ Years Experience</h3>
+                    <p class="text-gray-700 text-lg">I've seen it all and fixed it all. Professional solutions backed by years of hands-on expertise.</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-xl transform hover:scale-105 transition">
+                    <div class="text-6xl mb-4 animate-float">🕒</div>
+                    <h3 class="text-2xl font-bold text-blue-900 mb-3">24/7 Availability</h3>
+                    <p class="text-gray-700 text-lg">3 AM breakdown? No problem. I'm always ready to help, any time of day or night.</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-xl transform hover:scale-105 transition">
+                    <div class="text-6xl mb-4 animate-float" style="animation-delay: 0.3s">💰</div>
+                    <h3 class="text-2xl font-bold text-blue-900 mb-3">Honest Pricing</h3>
+                    <p class="text-gray-700 text-lg">What you see is what you pay. No hidden fees, no surprises, no games - just fair prices.</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-xl transform hover:scale-105 transition">
+                    <div class="text-6xl mb-4 animate-float" style="animation-delay: 0.6s">❤️</div>
+                    <h3 class="text-2xl font-bold text-blue-900 mb-3">I Actually Care</h3>
+                    <p class="text-gray
